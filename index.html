@@ -1,0 +1,1055 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f766e">
+<title>AI Medical Assistant | Smart Health</title>
+
+<style>
+:root {
+    --primary: #0d9488;
+    --primary-dark: #0f766e;
+    --navy: #17365d;
+    --muted: #64748b;
+    --bg: #f3f8fc;
+    --border: #e1ebf5;
+    --white: #ffffff;
+    --shadow: 0 12px 35px rgba(25, 67, 104, 0.07);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--navy);
+    min-height: 100vh;
+}
+
+button, input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.topbar {
+    min-height: 90px;
+    background: rgba(255,255,255,0.96);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 18px 4%;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.logo {
+    width: 54px;
+    height: 54px;
+    border-radius: 17px;
+    display: grid;
+    place-items: center;
+    color: white;
+    font-size: 30px;
+    background: linear-gradient(135deg, #2dd4bf, #0f766e);
+    box-shadow: 0 8px 18px #0d948833;
+}
+
+.brand h1 {
+    font-size: 23px;
+    letter-spacing: -0.6px;
+}
+
+.brand p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.top-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.online-dot {
+    width: 9px;
+    height: 9px;
+    background: #10b981;
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px #d1fae5;
+}
+
+.layout {
+    width: 100%;
+    max-width: 1700px;
+    margin: auto;
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr) 290px;
+    gap: 20px;
+    align-items: start;
+}
+
+.sidebar, .chat-container, .panel {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+}
+
+.sidebar {
+    min-height: 660px;
+    padding: 18px 13px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.nav-label {
+    padding: 8px 12px;
+    font-size: 10px;
+    color: #94a3b8;
+    letter-spacing: 1.5px;
+    font-weight: 800;
+}
+
+.nav-item {
+    width: 100%;
+    border: none;
+    background: transparent;
+    border-radius: 12px;
+    text-align: left;
+    padding: 14px 12px;
+    font-size: 13px;
+    color: #526781;
+}
+
+.nav-item:hover {
+    background: #f0fdfa;
+    color: var(--primary-dark);
+}
+
+.nav-item.active {
+    color: var(--primary-dark);
+    background: linear-gradient(110deg, #d9fbf5, #e8f5ff);
+    font-weight: 700;
+}
+
+.privacy-card {
+    margin-top: 28px;
+    border-radius: 15px;
+    padding: 15px;
+    background: linear-gradient(145deg, #e7fbf7, #eff6ff);
+    line-height: 1.6;
+}
+
+.privacy-card h3 {
+    font-size: 13px;
+    margin-bottom: 7px;
+}
+
+.privacy-card p {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+    padding: 18px 8px 5px;
+    text-align: center;
+    color: #7890aa;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.chat-container {
+    min-width: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 690px;
+}
+
+.chat-header {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 20px;
+    background: linear-gradient(115deg, #e2fbf7, #eff6ff 85%);
+    border-bottom: 1px solid var(--border);
+}
+
+.bot-avatar {
+    flex-shrink: 0;
+    width: 47px;
+    height: 47px;
+    display: grid;
+    place-items: center;
+    border-radius: 16px;
+    font-size: 24px;
+    background: white;
+    box-shadow: 0 5px 15px #0f766e16;
+}
+
+.chat-header h2 {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.chat-header p {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.chat-status {
+    margin-left: auto;
+    align-self: flex-start;
+    padding: 7px 9px;
+    border-radius: 20px;
+    background: #d1fae5;
+    color: #047857;
+    white-space: nowrap;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.chat-box {
+    flex: 1;
+    min-height: 360px;
+    max-height: 490px;
+    overflow-y: auto;
+    padding: 24px 20px;
+    scroll-behavior: smooth;
+    background:
+        radial-gradient(ellipse at top left, #f0fdfa66, transparent 45%),
+        #ffffff;
+}
+
+.message-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 21px;
+    animation: appear 0.25s ease;
+}
+
+@keyframes appear {
+    from { opacity: 0; transform: translateY(7px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.message-row.user {
+    justify-content: flex-end;
+}
+
+.message-avatar {
+    width: 33px;
+    height: 33px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    background: #d7faf3;
+    border-radius: 12px;
+    font-size: 17px;
+}
+
+.message-content {
+    max-width: 86%;
+    min-width: 0;
+}
+
+.message {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    line-height: 1.8;
+    padding: 14px 16px;
+    background: #edf7fb;
+    color: #244568;
+    border: 1px solid #e3f0f6;
+    border-radius: 5px 16px 16px 16px;
+    font-size: 13px;
+}
+
+.user .message {
+    background: linear-gradient(135deg, #0d9488, #0f766e);
+    color: white;
+    border: none;
+    border-radius: 16px 5px 16px 16px;
+    box-shadow: 0 5px 14px #0d948820;
+}
+
+.timestamp {
+    display: block;
+    margin: 6px 3px 0;
+    font-size: 10px;
+    color: #94a3b8;
+}
+
+.user .timestamp {
+    text-align: right;
+}
+
+.typing {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 18px 43px;
+    padding: 11px 15px;
+    border-radius: 12px;
+    background: #edf7fb;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.typing-dots {
+    display: flex;
+    gap: 4px;
+}
+
+.typing-dots span {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--primary);
+    animation: bounce 0.8s infinite alternate;
+}
+
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+    to { transform: translateY(-4px); opacity: 0.4; }
+}
+
+.composer {
+    padding: 17px;
+    border-top: 1px solid var(--border);
+    background: #fbfdff;
+}
+
+.input-row {
+    display: flex;
+    gap: 9px;
+}
+
+.input-wrap {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 13px;
+    background: white;
+    border: 1px solid #d9e4ef;
+    border-radius: 13px;
+    transition: 0.2s;
+}
+
+.input-wrap:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px #ccfbf166;
+}
+
+.input-wrap span {
+    color: #94a3b8;
+    font-size: 19px;
+}
+
+.input-wrap input {
+    width: 100%;
+    min-width: 0;
+    padding: 14px 0;
+    border: none;
+    outline: none;
+    color: var(--navy);
+    background: transparent;
+    font-size: 13px;
+}
+
+.input-wrap input::placeholder {
+    color: #94a3b8;
+}
+
+.send-btn {
+    border: none;
+    border-radius: 13px;
+    padding: 0 20px;
+    background: linear-gradient(135deg, #14b8a6, #0f766e);
+    color: white;
+    font-weight: 700;
+    font-size: 13px;
+    box-shadow: 0 6px 14px #0d948825;
+}
+
+.send-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px #0d948833;
+}
+
+.send-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.quick-label {
+    margin: 16px 0 9px;
+    font-size: 11px;
+    color: #8090a5;
+    font-weight: 700;
+}
+
+.quick-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-bottom: 15px;
+}
+
+.quick-btn {
+    border: 1px solid #dce7f1;
+    border-radius: 22px;
+    padding: 8px 11px;
+    color: #45617e;
+    background: white;
+    font-size: 11px;
+}
+
+.quick-btn:hover {
+    background: #e6fffb;
+    border-color: #5eead4;
+    color: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+.disclaimer {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 11px 12px;
+    border-radius: 10px;
+    background: #f0f6fc;
+    color: #637b96;
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+.right-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+    min-width: 0;
+}
+
+.panel {
+    padding: 18px;
+    min-width: 0;
+}
+
+.panel-title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.panel-icon {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    background: #e1f8f4;
+    font-size: 17px;
+}
+
+.panel-description {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 14px;
+}
+
+.symptom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.symptom-btn {
+    min-height: 43px;
+    border: 1px solid #e0eaf4;
+    border-radius: 11px;
+    background: #f8fbff;
+    color: #3f5878;
+    font-size: 11px;
+    padding: 8px 5px;
+}
+
+.symptom-btn:hover {
+    background: #e6fffb;
+    border-color: #5eead4;
+}
+
+.status-line {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    gap: 8px;
+    padding: 12px 0;
+    border-top: 1px solid #edf2f7;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.status-line span:first-child {
+    color: var(--muted);
+}
+
+.status-value {
+    text-align: right;
+    overflow-wrap: anywhere;
+    font-weight: 600;
+}
+
+.notice {
+    background: linear-gradient(145deg, #e7fbf7, #f2fbff);
+    border-color: #b5eee3;
+}
+
+.notice p {
+    color: #4b6c7b;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.wellness {
+    text-align: center;
+    background: linear-gradient(145deg, #e5faf8, #eff6ff);
+    padding: 25px 15px;
+}
+
+.wellness-icon {
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+.wellness h3 {
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.wellness p {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.footer {
+    padding: 5px 20px 20px;
+    text-align: center;
+    color: #8b9aab;
+    font-size: 11px;
+}
+
+@media (min-width: 1500px) {
+    .layout {
+        grid-template-columns: 235px minmax(0, 1fr) 315px;
+        gap: 24px;
+        padding: 30px;
+    }
+}
+
+@media (max-width: 1150px) {
+    .layout {
+        grid-template-columns: 180px minmax(0, 1fr);
+    }
+
+    .right-panel {
+        grid-column: 2;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .sidebar {
+        grid-row: 1 / span 2;
+    }
+
+    .top-right {
+        display: none;
+    }
+}
+
+@media (max-width: 720px) {
+    .topbar {
+        padding: 15px;
+    }
+
+    .brand {
+        gap: 10px;
+    }
+
+    .logo {
+        width: 44px;
+        height: 44px;
+        border-radius: 13px;
+    }
+
+    .brand h1 {
+        font-size: 18px;
+    }
+
+    .brand p {
+        font-size: 11px;
+    }
+
+    .layout {
+        display: flex;
+        flex-direction: column;
+        padding: 12px;
+        gap: 14px;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .chat-container {
+        width: 100%;
+        min-height: 600px;
+    }
+
+    .chat-header {
+        padding: 15px;
+    }
+
+    .chat-status {
+        display: none;
+    }
+
+    .chat-box {
+        min-height: 350px;
+        max-height: 55vh;
+        padding: 17px 12px;
+    }
+
+    .composer {
+        padding: 12px;
+    }
+
+    .message-content {
+        max-width: 89%;
+    }
+
+    .message {
+        padding: 12px;
+        font-size: 12px;
+    }
+
+    .send-btn {
+        padding: 0 13px;
+    }
+
+    .right-panel {
+        width: 100%;
+        display: flex;
+    }
+
+    .panel {
+        padding: 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+    <div class="brand">
+        <div class="logo">♡</div>
+        <div>
+            <h1>AI Medical Assistant</h1>
+            <p>Your health information assistant</p>
+        </div>
+    </div>
+
+    <div class="top-right">
+        <span class="online-dot"></span>
+        <span>Smart Health Guidance</span>
+        <span>•</span>
+        <span>Educational Assistant</span>
+    </div>
+</header>
+
+<main class="layout">
+
+    <aside class="sidebar">
+        <div class="nav-label">WORKSPACE</div>
+
+        <button class="nav-item active" type="button">💬 &nbsp; Chat Assistant</button>
+        <button class="nav-item" type="button" onclick="showGuide()">📖 &nbsp; Symptoms Guide</button>
+        <button class="nav-item" type="button" onclick="showTips()">✦ &nbsp; Health Tips</button>
+        <button class="nav-item" type="button" onclick="showAbout()">ⓘ &nbsp; About Project</button>
+
+        <div class="privacy-card">
+            <h3>🛡️ Your Privacy Matters</h3>
+            <p>Avoid entering personal identifiers or private medical records into this demo.</p>
+        </div>
+
+        <div class="sidebar-bottom">
+            Made with 💚 for smarter health awareness
+        </div>
+    </aside>
+
+    <section class="chat-container">
+
+        <div class="chat-header">
+            <div class="bot-avatar">🤖</div>
+            <div>
+                <h2>Your Health Assistant</h2>
+                <p>Describe symptoms to receive general health information.</p>
+            </div>
+            <div class="chat-status">● READY</div>
+        </div>
+
+        <div class="chat-box" id="chatBox" aria-live="polite">
+            <div class="message-row">
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <div class="message">Hello! 👋 Welcome to your AI Medical Assistant.
+
+I can provide general health information and demonstrate symptom classification using a machine learning model.
+
+What symptoms would you like to ask about today?</div>
+                    <span class="timestamp">AI Assistant</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="composer">
+            <form class="input-row" id="chatForm">
+                <div class="input-wrap">
+                    <span>✧</span>
+                    <input
+                        type="text"
+                        id="symptomInput"
+                        placeholder="Describe your symptoms..."
+                        maxlength="1000"
+                        autocomplete="off"
+                        aria-label="Describe your symptoms"
+                        required
+                    >
+                </div>
+                <button class="send-btn" id="sendBtn" type="submit">➤ Send</button>
+            </form>
+
+            <div class="quick-label">QUICK SUGGESTIONS</div>
+
+            <div class="quick-inputs">
+                <button class="quick-btn" type="button" onclick="useSymptom('fever')">🌡️ Fever</button>
+                <button class="quick-btn" type="button" onclick="useSymptom('cough')">🫁 Cough</button>
+                <button class="quick-btn" type="button" onclick="useSymptom('headache')">🤕 Headache</button>
+                <button class="quick-btn" type="button" onclick="useSymptom('stomach pain')">Stomach Pain</button>
+                <button class="quick-btn" type="button" onclick="useSymptom('vomiting')">Vomiting</button>
+                <button class="quick-btn" type="button" onclick="useSymptom('diarrhea')">Diarrhea</button>
+            </div>
+
+            <div class="disclaimer">
+                <span>⚠️</span>
+                <span>For educational use only. Model results are not diagnoses or confirmed probabilities. Seek professional care for medical concerns.</span>
+            </div>
+        </div>
+
+    </section>
+
+    <aside class="right-panel">
+
+        <section class="panel">
+            <div class="panel-title">
+                <div class="panel-icon">🩺</div>
+                <span>Symptom Explorer</span>
+            </div>
+
+            <p class="panel-description">
+                Select a common symptom to place it in the chat input.
+            </p>
+
+            <div class="symptom-grid">
+                <button class="symptom-btn" type="button" onclick="useSymptom('fever')">🌡️ Fever</button>
+                <button class="symptom-btn" type="button" onclick="useSymptom('cough')">🫁 Cough</button>
+                <button class="symptom-btn" type="button" onclick="useSymptom('headache')">🤕 Headache</button>
+                <button class="symptom-btn" type="button" onclick="useSymptom('stomach pain')">Stomach Pain</button>
+                <button class="symptom-btn" type="button" onclick="useSymptom('vomiting')">Vomiting</button>
+                <button class="symptom-btn" type="button" onclick="useSymptom('diarrhea')">Diarrhea</button>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-title">
+                <div class="panel-icon">🛡️</div>
+                <span>Model Information</span>
+            </div>
+
+            <div class="status-line">
+                <span>Status</span>
+                <span class="status-value" id="modelStatus">Loading...</span>
+            </div>
+
+            <div class="status-line">
+                <span>Test Accuracy</span>
+                <span class="status-value" id="modelAccuracy">Checking...</span>
+            </div>
+
+            <div class="status-line">
+                <span>Features</span>
+                <span class="status-value" id="modelFeatures">Loading...</span>
+            </div>
+
+            <div class="status-line">
+                <span>Dataset Mode</span>
+                <span class="status-value" id="modelMode">Loading...</span>
+            </div>
+        </section>
+
+        <section class="panel notice">
+            <div class="panel-title">
+                <div class="panel-icon">✚</div>
+                <span>Health Reminder</span>
+            </div>
+            <p>
+                AI predictions can be incorrect. They are for learning and
+                general information, not medical diagnosis. For personal
+                medical advice, consult a qualified healthcare professional.
+            </p>
+        </section>
+
+        <section class="panel wellness">
+            <div class="wellness-icon">💚</div>
+            <h3>Your Health Matters</h3>
+            <p>Stay informed, look after yourself, and seek help when you need it.</p>
+        </section>
+
+    </aside>
+</main>
+
+<footer class="footer">
+    AI Medical Assistant · Educational Machine Learning Project · 2026
+</footer>
+
+<script>
+const chatBox = document.getElementById("chatBox");
+const input = document.getElementById("symptomInput");
+const sendBtn = document.getElementById("sendBtn");
+const chatForm = document.getElementById("chatForm");
+
+function getTime() {
+    return new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+}
+
+function scrollToLatest() {
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function addMessage(text, sender) {
+    const row = document.createElement("div");
+    row.className = "message-row " + sender;
+
+    if (sender === "bot") {
+        const avatar = document.createElement("div");
+        avatar.className = "message-avatar";
+        avatar.textContent = "🤖";
+        row.appendChild(avatar);
+    }
+
+    const content = document.createElement("div");
+    content.className = "message-content";
+
+    const bubble = document.createElement("div");
+    bubble.className = "message";
+    bubble.textContent = text;
+
+    const timestamp = document.createElement("span");
+    timestamp.className = "timestamp";
+    timestamp.textContent = getTime();
+
+    content.appendChild(bubble);
+    content.appendChild(timestamp);
+    row.appendChild(content);
+    chatBox.appendChild(row);
+
+    scrollToLatest();
+    return row;
+}
+
+function showTyping() {
+    const typing = document.createElement("div");
+    typing.className = "typing";
+    typing.id = "typingIndicator";
+
+    const label = document.createElement("span");
+    label.textContent = "Assistant is thinking";
+
+    const dots = document.createElement("span");
+    dots.className = "typing-dots";
+
+    for (let i = 0; i < 3; i++) {
+        dots.appendChild(document.createElement("span"));
+    }
+
+    typing.appendChild(label);
+    typing.appendChild(dots);
+    chatBox.appendChild(typing);
+    scrollToLatest();
+}
+
+function hideTyping() {
+    const typing = document.getElementById("typingIndicator");
+    if (typing) typing.remove();
+}
+
+function useSymptom(symptom) {
+    input.value = symptom;
+    input.focus();
+}
+
+chatForm.addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const message = input.value.trim();
+
+    if (!message || sendBtn.disabled) return;
+
+    addMessage(message, "user");
+    input.value = "";
+    sendBtn.disabled = true;
+    sendBtn.textContent = "Sending...";
+    showTyping();
+
+    try {
+        const response = await fetch("/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ message })
+        });
+
+        if (!response.ok) {
+            throw new Error("Server error: " + response.status);
+        }
+
+        const data = await response.json();
+        hideTyping();
+
+        addMessage(
+            data.response || "No response received. Please try again.",
+            "bot"
+        );
+    } catch (error) {
+        hideTyping();
+
+        addMessage(
+            "I couldn't connect to the Flask server. Please check that the application is running, then try again.",
+            "bot"
+        );
+    } finally {
+        sendBtn.disabled = false;
+        sendBtn.textContent = "➤ Send";
+        input.focus();
+    }
+});
+
+async function loadModelStatus() {
+    const status = document.getElementById("modelStatus");
+    const accuracy = document.getElementById("modelAccuracy");
+    const features = document.getElementById("modelFeatures");
+    const mode = document.getElementById("modelMode");
+
+    try {
+        const response = await fetch("/model-status");
+
+        if (!response.ok) throw new Error("Status unavailable");
+
+        const data = await response.json();
+
+        status.textContent = data.status || "Unknown";
+
+        // This is the backend's evaluation score, not clinical accuracy.
+        accuracy.textContent =
+            data.accuracy !== null && data.accuracy !== undefined
+                ? data.accuracy + "%"
+                : "Not available";
+
+        features.textContent =
+            data.symptom_features !== undefined
+                ? data.symptom_features + " features"
+                : "Not available";
+
+        mode.textContent = data.demo_mode ? "Demo data" : "Training data";
+    } catch (error) {
+        status.textContent = "Unavailable";
+        accuracy.textContent = "Not available";
+        features.textContent = "Not available";
+        mode.textContent = "Unknown";
+    }
+}
+
+function showGuide() {
+    addMessage(
+        "Symptoms Guide\n\nYou can describe symptoms such as fever, cough, headache, stomach pain, vomiting, or diarrhea. Include how long symptoms have lasted if helpful. This educational tool cannot confirm a diagnosis.",
+        "bot"
+    );
+}
+
+function showTips() {
+    addMessage(
+        "General Health Tips\n\n• Stay hydrated.\n• Get adequate rest.\n• Maintain hand hygiene.\n• Monitor changes in symptoms.\n• Consult a qualified healthcare professional if you are concerned.\n\nThese general tips are not a substitute for personal medical advice.",
+        "bot"
+    );
+}
+
+function showAbout() {
+    addMessage(
+        "About This Project\n\nAI Medical Assistant is an educational Flask and Machine Learning project. It uses a Random Forest classifier and a symptom dataset to demonstrate symptom classification. Its predictions are not clinically validated diagnoses.",
+        "bot"
+    );
+}
+
+window.addEventListener("load", function() {
+    loadModelStatus();
+    scrollToLatest();
+});
+</script>
+
+</body>
+</html>
